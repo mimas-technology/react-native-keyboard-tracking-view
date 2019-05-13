@@ -11,4 +11,5 @@
 #import <React/RCTBridgeModule.h>
 
 @interface KeyboardTrackingViewManager : RCTViewManager
+
 @end
