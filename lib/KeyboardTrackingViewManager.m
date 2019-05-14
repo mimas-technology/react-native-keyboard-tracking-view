@@ -455,7 +455,8 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
         if (self.onKeyboardHeightChange) {
             self.onKeyboardHeightChange(@{
                                           @"height": @(_observingInputAccessoryView.keyboardHeight),
-                                          @"state": @(_observingInputAccessoryView.keyboardState)
+                                          @"state": @(_observingInputAccessoryView.keyboardState),
+                                          @"hasInsets": @(bottomSafeArea > 0.0)
                                           });
         }
     }
