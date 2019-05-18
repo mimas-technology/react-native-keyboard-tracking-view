@@ -54,6 +54,7 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 @property (nonatomic) BOOL allowHitsOutsideBounds;
 @property (nonatomic) NSString* scrollViewNativeID;
 @property (nonatomic) CGFloat initialOffsetY;
+@property (nonatomic) BOOL initialOffsetIsSet;
 
 @end
 
@@ -72,12 +73,14 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
         [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
         _inputViewsMap = [NSMapTable weakToWeakObjectsMapTable];
         _deferedInitializeAccessoryViewsCount = 0;
-        _initialOffsetY = 0;
         _rctScrollViewsArray = [[NSMutableDictionary alloc] init];
 
         _observingInputAccessoryView = [ObservingInputAccessoryView new];
         _observingInputAccessoryView.delegate = self;
 
+        _initialOffsetY = 0;
+        _initialOffsetIsSet = NO;
+        
         _manageScrollView = YES;
         _allowHitsOutsideBounds = NO;
         _requiresSameParentToManageScrollView = YES;
@@ -398,6 +401,11 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 {
     if(self.scrollViewToManage != nil)
     {
+        if (!_initialOffsetIsSet) {
+            self.initialOffsetY = self.scrollViewToManage.contentOffset.y;
+            _initialOffsetIsSet = YES;
+        }
+        
         if (_observingInputAccessoryView.keyboardState != KeyboardStateWillHide && _observingInputAccessoryView.keyboardState != KeyboardStateHidden) {
             [self.scrollViewToManage setContentOffset:CGPointMake(self.scrollViewToManage.contentOffset.x, self.initialOffsetY) animated:NO];
         }
@@ -613,6 +621,7 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     self.isDraggingScrollView = YES;
+    _initialOffsetIsSet = NO;
     self.initialOffsetY = scrollView.contentOffset.y;
 }
 
