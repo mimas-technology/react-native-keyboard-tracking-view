@@ -56,6 +56,9 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 @property (nonatomic) CGFloat initialOffsetY;
 @property (nonatomic) BOOL initialOffsetIsSet;
 
+@property (nonatomic, strong) UIView *accessoriesContainer;
+@property (nonatomic) NSString* accessoriesContainerID;
+
 @end
 
 @interface KeyboardTrackingView () <ObservingInputAccessoryViewDelegate, UIScrollViewDelegate>
@@ -178,6 +181,15 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 
     for (UIView* subview in allSubviews)
     {
+        if(subview.nativeID) {
+            NSLog(@"self.accessoriesContainerID %@ %@", self.accessoriesContainerID, subview.nativeID);
+        }
+        
+        if (subview.nativeID && [subview.nativeID isEqualToString:self.accessoriesContainerID]) {
+            NSLog(@"SuperView ID: %@", subview.nativeID);
+            _accessoriesContainer = subview;
+        }
+        
         if(_manageScrollView)
         {
             if(_scrollViewToManage == nil)
@@ -459,6 +471,12 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
         CGRect frame = CGRectMake(self.scrollViewToManage.frame.origin.x, _observingInputAccessoryView.keyboardHeight,
                                   self.scrollViewToManage.frame.size.width, self.scrollViewToManage.frame.size.height);
         self.scrollViewToManage.frame = frame;
+        
+        if (self.accessoriesContainer) {
+            self.accessoriesContainer.bounds =  CGRectMake(self.accessoriesContainer.bounds.origin.x, _observingInputAccessoryView.keyboardHeight,
+                                                           self.accessoriesContainer.bounds.size.width, self.accessoriesContainer.bounds.size.height);
+        }
+
     }
 }
 
@@ -685,6 +703,7 @@ RCT_REMAP_VIEW_PROPERTY(addBottomView, addBottomView, BOOL)
 RCT_REMAP_VIEW_PROPERTY(scrollToFocusedInput, scrollToFocusedInput, BOOL)
 RCT_REMAP_VIEW_PROPERTY(allowHitsOutsideBounds, allowHitsOutsideBounds, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollViewNativeID, NSString)
+RCT_EXPORT_VIEW_PROPERTY(accessoriesContainerID, NSString)
 RCT_CUSTOM_VIEW_PROPERTY(backgroundColor, UIColor, KeyboardTrackingView) {
     [view setBottomViewBackgroundColor:[RCTConvert UIColor:json]];
 }
