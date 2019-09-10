@@ -52,6 +52,7 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
 @property (nonatomic) BOOL addBottomView;
 @property (nonatomic) BOOL scrollToFocusedInput;
 @property (nonatomic) BOOL allowHitsOutsideBounds;
+@property (nonatomic) BOOL normalList;
 @property (nonatomic) NSString* scrollViewNativeID;
 @property (nonatomic) CGFloat initialOffsetY;
 @property (nonatomic) BOOL initialOffsetIsSet;
@@ -468,12 +469,13 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
         }
         self.scrollViewToManage.scrollIndicatorInsets = insets;
 
-        CGRect frame = CGRectMake(self.scrollViewToManage.frame.origin.x, _observingInputAccessoryView.keyboardHeight,
+        CGFloat positionY = self.normalList ? 0 : _observingInputAccessoryView.keyboardHeight;
+        CGRect frame = CGRectMake(self.scrollViewToManage.frame.origin.x, positionY,
                                   self.scrollViewToManage.frame.size.width, self.scrollViewToManage.frame.size.height);
         self.scrollViewToManage.frame = frame;
         
         if (self.accessoriesContainer) {
-            self.accessoriesContainer.bounds =  CGRectMake(self.accessoriesContainer.bounds.origin.x, _observingInputAccessoryView.keyboardHeight,
+            self.accessoriesContainer.bounds =  CGRectMake(self.accessoriesContainer.bounds.origin.x, positionY,
                                                            self.accessoriesContainer.bounds.size.width, self.accessoriesContainer.bounds.size.height);
         }
 
@@ -702,6 +704,7 @@ RCT_REMAP_VIEW_PROPERTY(requiresSameParentToManageScrollView, requiresSameParent
 RCT_REMAP_VIEW_PROPERTY(addBottomView, addBottomView, BOOL)
 RCT_REMAP_VIEW_PROPERTY(scrollToFocusedInput, scrollToFocusedInput, BOOL)
 RCT_REMAP_VIEW_PROPERTY(allowHitsOutsideBounds, allowHitsOutsideBounds, BOOL)
+RCT_REMAP_VIEW_PROPERTY(normalList, normalList, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollViewNativeID, NSString)
 RCT_EXPORT_VIEW_PROPERTY(accessoriesContainerID, NSString)
 RCT_CUSTOM_VIEW_PROPERTY(backgroundColor, UIColor, KeyboardTrackingView) {
