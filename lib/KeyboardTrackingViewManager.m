@@ -6,6 +6,8 @@
 //  Copyright © 2016 Wix.com All rights reserved.
 //
 
+#import <WebKit/WebKit.h>
+
 #import "KeyboardTrackingViewManager.h"
 #import "ObservingInputAccessoryView.h"
 #import "UIResponder+FirstResponder.h"
@@ -141,12 +143,12 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
     return subview;
 }
 
--(void)_swizzleWebViewInputAccessory:(UIWebView*)webview
+-(void)_swizzleWebViewInputAccessory:(WKWebView*)webview
 {
     UIView* subview;
     for (UIView* view in webview.scrollView.subviews)
     {
-        if([[view.class description] hasPrefix:@"UIWeb"])
+        if([[view.class description] hasPrefix:@"WKWeb"])
         {
             subview = view;
         }
@@ -247,9 +249,9 @@ typedef NS_ENUM(NSUInteger, KeyboardTrackingScrollBehavior) {
         {
             [self setupTextView:(UITextView*)subview];
         }
-        else if ([subview isKindOfClass:[UIWebView class]])
+        else if ([subview isKindOfClass:[WKWebView class]])
         {
-            [self _swizzleWebViewInputAccessory:(UIWebView*)subview];
+            [self _swizzleWebViewInputAccessory:(WKWebView*)subview];
         }
     }
 
